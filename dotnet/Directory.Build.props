@@ -21,7 +21,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepoRoot>$([System.IO.Path]::GetDirectoryName($([MSBuild]::GetPathOfFileAbove('.gitignore', '$(MSBuildThisFileDirectory)'))))</RepoRoot>
+    <!--<RepoRoot>$([System.IO.Path]::GetDirectoryName($([MSBuild]::GetPathOfFileAbove('.gitignore', '$(MSBuildThisFileDirectory)'))))</RepoRoot>-->
+    <RepoRoot>D:\github\semantic-kernel</RepoRoot>
   </PropertyGroup>
 
   <ItemGroup>

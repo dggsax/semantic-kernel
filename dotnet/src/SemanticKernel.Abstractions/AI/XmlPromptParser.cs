@@ -69,7 +69,7 @@ internal static class XmlPromptParser
             return null;
         }
 
-        var nodeContent = node.InnerText.Trim();
+        var nodeContent = node.InnerXml.Trim();
 
         var promptNode = new PromptNode(node.Name)
         {

@@ -26,6 +26,56 @@ public class XmlPromptParserTests
     }
 
     [Fact]
+    public void ItReturnsPromptNodesWhenPromptHasInputCode()
+    {
+        // Arrange
+        const string Prompt = @"
+<message role=""user"">
+Test with user code as input for the prompt
+
+```csharp
+/// <summary>
+/// Example Method
+/// </summary>
+public void Method()
+{
+    Console.WriteLine(""Hello, World!"");
+}
+```
+</message>
+";
+
+        var expectedNodes = new List<PromptNode>
+        {
+            new("message") { Attributes = { { "role", "user" } }, Content = """
+            Test with user code as input for the prompt
+            
+            ```csharp
+            /// <summary>
+            /// Example Method
+            /// </summary>
+            public void Method()
+            {
+                Console.WriteLine("Hello, World!");
+            }
+            ```
+            """ },
+        };
+
+        // Act
+        var result = XmlPromptParser.TryParse(Prompt, out var actualNodes);
+
+        // Assert
+        Assert.True(result);
+        Assert.NotNull(actualNodes);
+
+        for (var i = 0; i < actualNodes.Count; i++)
+        {
+            this.AssertPromptNode(expectedNodes[i], actualNodes[i]);
+        }
+    }
+
+    [Fact]
     public void ItReturnsPromptNodesWhenPromptHasXmlFormat()
     {
         // Arrange
@@ -59,7 +109,10 @@ Second line.
             new("message")
             {
                 Attributes = { { "role", "user" } },
-                ChildNodes = new List<PromptNode> { new("audio") { Attributes = { { "src", "https://fake-link-to-audio" } } } }
+                ChildNodes = new List<PromptNode> { new("audio") { Attributes = { { "src", "https://fake-link-to-audio" } } } },
+
+                // TODO: Because they're using XmlDocument.LoadXml(), any prompts with input single quotes in the code nodes will be converted, interpreted by the AI, and returned as double quotes.
+                Content = "<audio src=\"https://fake-link-to-audio\" />"
             },
         };
 
